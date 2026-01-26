@@ -120,7 +120,7 @@ server <- function(input, output) {
   })
     output$tab <- renderDT({
       dataInput() %>% 
-        mutate(players = paste(min, max, collapse = "-") %>%
+        mutate(players = paste(min, max, sep = "-")) %>%
         select(game, category, players, Age, time, complexity, year, award)
     }, filter = "top",
     options = list(pageLength = 25),
