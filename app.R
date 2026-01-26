@@ -38,7 +38,7 @@ ui <- page_fluid(
                         "Maximum game time:",
                         min = 15,
                         max = 150,
-                        value = 150, step = 15),
+                        value = c(15, 150), step = 15),
             checkboxGroupInput(
               "spieldesjahres",
               "Award winners",
@@ -56,7 +56,7 @@ ui <- page_fluid(
               choices = list("Board" = "board", 
                              "Card" = "card", 
                              "Dice" = "dice"),
-              selected = c("board", "card", "dice")
+              selected = c("board")
             ),
             #verbatimTextOutput("if too many games match the above criteria, a random sample will be chosen")
         ),
@@ -120,7 +120,8 @@ server <- function(input, output) {
   })
     output$tab <- renderDT({
       dataInput() %>% 
-        select(game, category, Age, time, complexity, year, award)
+        mutate(players = paste(min, max, collapse = "-") %>%
+        select(game, category, players, Age, time, complexity, year, award)
     }, filter = "top",
     options = list(pageLength = 25),
     rownames = FALSE)
