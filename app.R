@@ -80,7 +80,7 @@ ui <- page_fluid(
 server <- function(input, output) {
 
   dataInput <- reactive({
-  dat <- read_xlsx("data/game collection.xlsx") %>%
+  dat <- read_csv("data/game_collection.csv") %>%
     select(game:year, 
            award = `Spiel des Jahres`,
            bgg = `bgg link`,
@@ -91,16 +91,17 @@ server <- function(input, output) {
     mutate(award = ifelse(award == "nominated", "recommended", award)) %>% 
     mutate(award = factor(award, c("Spiel des Jahres", "Kennerspiel", "Kinderspiel", 
                                    "recommended", "other"))) %>% 
-    mutate(num_players = map2(min, max, ~ .x:.y))
+    mutate(num_players = map2(min, max, ~ .x:.y),
+          time_frame = map2(time1, time2, ~ .x:.y))
   
   pl <- input$num_players[1]:input$num_players[2]
   ag <- input$age_range[1]:input$age_range[2]
-  ti <- input$max_time
+  ti <- input$max_time[1]:input$max_time[2]
   
   games_to_try <- dat %>% 
     mutate(check_players = map_lgl(num_players, ~ any(pl %in% .x)),
            check_age = map_lgl(Age, ~ any(ag %in% .x)),
-           check_time = time <= ti) %>% 
+           check_time = map_lgl(time_frame, ~ any(ti %in% .x))) %>% 
     filter(check_players, check_age, check_time) %>% 
     filter(award %in% input$spieldesjahres) %>% 
     filter(category %in% input$type)
