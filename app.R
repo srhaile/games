@@ -36,9 +36,9 @@ ui <- page_fluid(
                         value = c(4, 18), step = 1),
             sliderInput("max_time",
                         "Maximum game time:",
-                        min = 15,
+                        min = 0,
                         max = 150,
-                        value = c(15, 150), step = 15),
+                        value = c(0, 150), step = 15),
             checkboxGroupInput(
               "spieldesjahres",
               "Award winners",
@@ -91,6 +91,7 @@ server <- function(input, output) {
     mutate(award = ifelse(award == "nominated", "recommended", award)) %>% 
     mutate(award = factor(award, c("Spiel des Jahres", "Kennerspiel", "Kinderspiel", 
                                    "recommended", "other"))) %>% 
+    replace_na(list(time1 = 0, time2 = 0)) %>% 
     mutate(num_players = map2(min, max, ~ .x:.y),
           time_frame = map2(time1, time2, ~ .x:.y))
   
@@ -121,7 +122,8 @@ server <- function(input, output) {
   })
     output$tab <- renderDT({
       dataInput() %>% 
-        mutate(players = paste(min, max, sep = "-")) %>%
+        mutate(players = paste(min, max, sep = "-"),
+               time = paste(time1, time2, sep = "-")) %>%
         select(game, category, players, Age, time, complexity, year, award)
     }, filter = "top",
     options = list(pageLength = 25),
