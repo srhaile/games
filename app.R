@@ -132,7 +132,11 @@ server <- function(input, output) {
     output$shorttab <- renderTable({
       dataInput() %>% 
         arrange(award, -complexity) %>% 
-        group_by(award, category) %>% 
+        mutate(game = case_when(award == "Spiel des Jahres" ~ paste(game, "**", sep = ""),
+                                award %in% c("Kennerspiel", "Kinderspiel", 
+                                   "recommended") ~ paste(game, "*", sep = ""),
+                                .default = game)) %>%
+        group_by(category) %>% 
         summarize(games = paste(game, collapse = ", "))
     }, 
     rownames = FALSE)
