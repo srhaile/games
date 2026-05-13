@@ -27,18 +27,18 @@ ui <- page_fluid(
                         "Number of players today:",
                         min = 1,
                         max = 13,
-                        value = c(1, 13),
+                        value = c(2, 4),
                         step = 1),
             sliderInput("age_range",
                         "Age recommendations:",
                         min = 4,
                         max = 18,
-                        value = c(4, 18), step = 1),
+                        value = c(8, 18), step = 1),
             sliderInput("max_time",
                         "Maximum game time:",
                         min = 0,
                         max = 150,
-                        value = c(0, 150), step = 15),
+                        value = c(0, 60), step = 15),
             checkboxGroupInput(
               "spieldesjahres",
               "Award winners",
@@ -56,7 +56,7 @@ ui <- page_fluid(
               choices = list("Board" = "board", 
                              "Card" = "card", 
                              "Dice" = "dice"),
-              selected = c("board")
+              selected = c("board", "card", "dice")
             ),
             #verbatimTextOutput("if too many games match the above criteria, a random sample will be chosen")
         ),
