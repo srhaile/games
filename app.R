@@ -124,14 +124,15 @@ server <- function(input, output) {
       dataInput() %>% 
         mutate(players = paste(min, max, sep = "-"),
                time = paste(time1, time2, sep = "-")) %>%
-        select(game, category, players, Age, time, complexity, year, award)
+        select(game, category, players, Age, time, complexity, year, award) %>%
+        arrange(complexity)
     }, filter = "top",
     options = list(pageLength = 25),
     rownames = FALSE)
     
     output$shorttab <- renderTable({
       dataInput() %>% 
-        arrange(award, complexity) %>% 
+        arrange(complexity) %>% 
         mutate(game = case_when(award == "Spiel des Jahres" ~ paste(game, "**", sep = ""),
                                 award %in% c("Kennerspiel", "Kinderspiel", 
                                    "recommended") ~ paste(game, "*", sep = ""),
